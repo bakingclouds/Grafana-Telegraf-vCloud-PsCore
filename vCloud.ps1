@@ -11,7 +11,7 @@ $BasicAuth = $Configs.Base.BasicAuth
 #region: Login
 $Uri = "https://$VcdHost/api/sessions"
 $Authorization = 'Basic {0}' -f $BasicAuth
-$Headers =  @{'accept' = 'application/vnd.vmware.vcloud.session+xml;version=27.0'; 'Authorization' = $Authorization}
+$Headers =  @{'accept' = 'application/vnd.vmware.vcloud.session+xml;version=32.0'; 'Authorization' = $Authorization}
 $ResponseHeaders = $null
 try {
     $Login = Invoke-RestMethod -uri $Uri -Method Post -Headers $Headers -ResponseHeadersVariable 'ResponseHeaders'
@@ -28,7 +28,7 @@ Clear-Variable -Name BasicAuth, Authorization, Headers
 
 #region: Get vApps
 $Uri = "https://$VcdHost/api/query?type=orgVdc"
-$Headers =  @{'accept' = 'application/*+xml;version=27.0'; 'x-vcloud-authorization' = [String]$ResponseHeaders.'x-vcloud-authorization'}
+$Headers =  @{'accept' = 'application/*+xml;version=32.0'; 'x-vcloud-authorization' = [String]$ResponseHeaders.'x-vcloud-authorization'}
 [XML]$orgVdcs = Invoke-RestMethod -uri $Uri -Method Get -Headers $Headers
 #endregion
 
@@ -42,19 +42,19 @@ $body = "vCloudStats,vApp=$($item.name.Replace(' ','-')),status=$($item.status) 
 
 #region: Get VMs
 $Uri = "https://$VcdHost/api/query?type=vm"
-$Headers =  @{'accept' = 'application/*+xml;version=27.0'; 'x-vcloud-authorization' = [String]$ResponseHeaders.'x-vcloud-authorization'}
+$Headers =  @{'accept' = 'application/*+xml;version=32.0'; 'x-vcloud-authorization' = [String]$ResponseHeaders.'x-vcloud-authorization'}
 [XML]$VMs = Invoke-RestMethod -uri $Uri -Method Get -Headers $Headers
 #endregion
 
 #region: Get orgNetworks
 $Uri = "https://$VcdHost/api/query?type=orgNetwork"
-$Headers =  @{'accept' = 'application/*+xml;version=27.0'; 'x-vcloud-authorization' = [String]$ResponseHeaders.'x-vcloud-authorization'}
+$Headers =  @{'accept' = 'application/*+xml;version=32.0'; 'x-vcloud-authorization' = [String]$ResponseHeaders.'x-vcloud-authorization'}
 [XML]$orgNetworks = Invoke-RestMethod -uri $Uri -Method Get -Headers $Headers
 #endregion
 
 #region: Get edgeGateway
 $Uri = "https://$VcdHost/api/query?type=edgeGateway"
-$Headers =  @{'accept' = 'application/*+xml;version=27.0'; 'x-vcloud-authorization' = [String]$ResponseHeaders.'x-vcloud-authorization'}
+$Headers =  @{'accept' = 'application/*+xml;version=32.0'; 'x-vcloud-authorization' = [String]$ResponseHeaders.'x-vcloud-authorization'}
 [XML]$edgeGateways = Invoke-RestMethod -uri $Uri -Method Get -Headers $Headers
 #endregion
 
@@ -92,7 +92,7 @@ foreach ($item in [Array]$vApps.QueryResultRecords.VAppRecord) {
 ## orgNetwork Details
 foreach ($item in [Array]$orgNetworks.QueryResultRecords.OrgNetworkRecord) {
     $Uri = [string]$item.href + "/allocatedAddresses"
-    $Headers =  @{'accept' = 'application/*+xml;version=27.0'; 'x-vcloud-authorization' = [String]$ResponseHeaders.'x-vcloud-authorization'}
+    $Headers =  @{'accept' = 'application/*+xml;version=32.0'; 'x-vcloud-authorization' = [String]$ResponseHeaders.'x-vcloud-authorization'}
     [XML]$orgNetworkAllocated = Invoke-RestMethod -uri $Uri -Method Get -Headers $Headers
     $AllocatedIpAddressesTotal = $orgNetworkAllocated.AllocatedIpAddresses.IpAddress.Count
     $body = "vCloudStats,orgNetwork=$($item.name),gateway=$($item.gateway) AllocatedIpAddressesTotal=$AllocatedIpAddressesTotal"
@@ -107,7 +107,7 @@ foreach ($item in [Array]$edgeGateways.QueryResultRecords.EdgeGatewayRecord) {
 
 #region: Logout
 $Uri = "https://$VcdHost/api/session"
-$Headers =  @{'accept' = 'application/vnd.vmware.vcloud.session+xml;version=27.0'; 'x-vcloud-authorization' = [String]$ResponseHeaders.'x-vcloud-authorization'}
+$Headers =  @{'accept' = 'application/vnd.vmware.vcloud.session+xml;version=32.0'; 'x-vcloud-authorization' = [String]$ResponseHeaders.'x-vcloud-authorization'}
 $Logout = Invoke-RestMethod -uri $Uri -Method Delete -Headers $Headers
 #endregion
 
