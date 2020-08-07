@@ -33,10 +33,12 @@ $Headers =  @{'accept' = 'application/*+xml;version=27.0'; 'x-vcloud-authorizati
 #endregion
 
 #region: Get vApps
-$Uri = "https://$VcdHost/api/query?type=vApp"
-$Headers =  @{'accept' = 'application/*+xml;version=27.0'; 'x-vcloud-authorization' = [String]$ResponseHeaders.'x-vcloud-authorization'}
-[XML]$vApps = Invoke-RestMethod -uri $Uri -Method Get -Headers $Headers
-#endregion
+## vApp Details
+foreach ($item in [Array]$vApps.QueryResultRecords.VAppRecord) {
+    if($item.numberOfVMs -ne 0){
+$body = "vCloudStats,vApp=$($item.name.Replace(' ','-')),status=$($item.status) numberOfVMs=$($item.numberOfVMs),numberOfCpus=$($item.numberOfCpus),cpuAllocationInMhz=$($item.cpuAllocationInMhz),memoryAllocationMB=$($item.memoryAllocationMB),storageKB=$($item.storageKB)"
+        Write-Host $body
+}}
 
 #region: Get VMs
 $Uri = "https://$VcdHost/api/query?type=vm"
